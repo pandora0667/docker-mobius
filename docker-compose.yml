@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "dksdlfduq2"
+      MYSQL_DATABASE: "mobiusdb"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    
+    volumes:
+      - "./init/:/docker-entrypoint-initdb.d/"
+    ports:
+      - 3306:3306 
+    container_name: mobius_mysql
+
+  mqtt:
+    image: eclipse-mosquitto:latest
+    ports:
+      - 18830:1883
+    volumes:
+      - ./etc/mosquitto:/etc/mosquitto:ro
+      - ./var/log/mosquitto:/var/log/mosquitto:rw
+    depends_on:
+      - db
+        
+
+
