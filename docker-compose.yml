@@ -2,19 +2,6 @@ version: "3.3"
 
 services: 
   
-  mobius:
-    image: jusk2/mobius
-    network_mode: host
-    ports:
-      - 7579:7579
-      - 9727:9727
-      - 3105:3105
-      - 8081:8081
-    restart: always
-    command: sh -c "dockerize -wait tcp://db:3306 -timeout 10s"
-    depends_on:
-      - db
-
   db:
    image: mysql:5.7
    environment:
@@ -34,11 +21,35 @@ services:
 
   mqtt:
     image: eclipse-mosquitto:latest
-    volumes:
-      - ./etc/mosquitto:/etc/mosquitto:ro
-      - ./var/log/mosquitto:/var/log/mosquitto:rw
     network_mode: host
     ports:
       - 1883:1883
+    depends_on:
+      - db
+
+  mobius:
+    image: jusk2/mobius
+    network_mode: host
+    ports:
+      - 7579:7579
+    restart: always
+    command: sh -c "dockerize -wait tcp://db:3306 -timeout 10s"
+    depends_on:
+      - db
+
+  rosemary:
+    image: jusk2/rosemary
+    network_mode: host
+    ports:
+      - 7599:7599
+    restart: always
+    command: sh -c "dockerize -wait tcp://db:3306 -timeout 10s"
+    depends_on:
+      - db
+  
+  thyme:
+    image: jusk2/thyme
+    network_mode: host
+    restart: always
     depends_on:
       - db

@@ -21,12 +21,12 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-WORKDIR $HOME/Mobius
+WORKDIR $HOME/Rosemary
 
-COPY ./Mobius $HOME/Mobius
+COPY ./nCube-Rosemary $HOME/Rosemary
 RUN npm install -g --unsafe-perm
 
-EXPOSE 7579 9727 3105 8081
+EXPOSE 7599
 
-ENTRYPOINT ["node", "mobius"]
+ENTRYPOINT ["node", "rosemary"]
 # CMD [ "node", "mobius" ]
