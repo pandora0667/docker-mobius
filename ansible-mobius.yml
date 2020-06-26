@@ -1,0 +1,80 @@
+---
+- name: Setting on Mobius 
+  gather_facts: no 
+  hosts: all
+
+  tasks:
+    
+    - name: set timezone to set Asia/Seoul
+      timezone:
+        name: Asia/Seoul
+    
+    - name: Then add the GPG key for the official Docker repository to your system
+      apt_key: 
+        url: https://download.docker.com/linux/ubuntu/gpg
+
+    - name: Use the following command to set up the stable repository.
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+
+    - name: Update APT package manager repositories cache
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Ubuntu Server necessary package install 
+      apt: 
+       name: "{{packages}}"
+      vars:
+       packages: 
+       - curl
+       - build-essential
+       - apt-transport-https
+       - vim
+       - nmap
+       - git
+       - nload
+       - htop
+       - speedtest-cli
+       - iotop
+       - iftop
+       - software-properties-common
+       - python3
+       - ca-certificates
+       - gnupg2
+       - wget
+       - pigz
+       - gzip
+       - cifs-utils
+       - docker-ce
+       - docker-ce-cli
+       - containerd.io
+       - glances
+       - docker-compose
+       - python3-psycopg2
+
+    - name: Ubuntu update and upgrade after autoremvoe
+      apt:
+         autoremove: yes
+  
+    - name: clone docker-mobius
+      git:
+        repo: https://git.wisoft.io/seongwon/docker-mobius.git
+        version: master
+        dest: /docker-mobius
+        clone: yes
+
+    # - name: rosemary configure change
+    #   shell: sed -i /docker-mobius/rosemary/nCube-Rosemary/conf_mm.json 's/source/change/g'
+
+    # - name: thyme configure change
+    #   shell: sed -i /docker-mobius/rosemary/nCube-Thyme-Nodejs/conf.js 's/source/change/g'
+    
+    # - name: tas configure change
+    #   shell: sed -i /docker-mobius/tas-&device/device/conf.xml 's/source/change/g'
+   
+    - name: mobius docker-compose build
+      shell: cd /docker-mobius && docker-compose build
+
+    - name: mobius docker-compose start 
+      shell: cd /docker-mobius && docker-compose up -d 
