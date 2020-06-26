@@ -4,36 +4,34 @@
  * Made compatible with Thyme v1.7.2
  */
 
-var net = require('net');
-var util = require('util');
-var fs = require('fs');
-var xml2js = require('xml2js');
+let net = require('net');
+let util = require('util');
+let fs = require('fs');
+let xml2js = require('xml2js');
 
-var wdt = require('./wdt');
-//var sh_serial = require('./serial');
+let wdt = require('./wdt');
+let useparenthostname = '';
 
-var useparenthostname = '';
+let upload_arr = [];
+let download_arr = [];
 
-var upload_arr = [];
-var download_arr = [];
-
-var conf = {};
+let conf = {};
 
 // This is an async file read
 fs.readFile('conf.xml', 'utf-8', function (err, data) {
     if (err) {
-        console.log("FATAL An error occurred trying to read in the file: " + err);
-        console.log("error : set to default for configuration")
+        // console.log("FATAL An error occurred trying to read in the file: " + err);
+        // console.log("error : set to default for configuration")
     }
     else {
-        var parser = new xml2js.Parser({explicitArray: false});
+        let parser = new xml2js.Parser({explicitArray: false});
         parser.parseString(data, function (err, result) {
             if (err) {
-                console.log("Parsing An error occurred trying to read in the file: " + err);
-                console.log("error : set to default for configuration")
+                // console.log("Parsing An error occurred trying to read in the file: " + err);
+                // console.log("error : set to default for configuration")
             }
             else {
-                var jsonString = JSON.stringify(result);
+                let jsonString = JSON.stringify(result);
                 conf = JSON.parse(jsonString)['m2m:conf'];
 
                 usecomport = conf.tas.comport;
@@ -64,47 +62,47 @@ fs.readFile('conf.xml', 'utf-8', function (err, data) {
 });
 
 
-var tas_state = 'init';
+let tas_state = 'init';
 
-var upload_client = null;
+let upload_client = null;
 
-var t_count = 0;
+let t_count = 0;
 
 
 function upload_data() {
     if (tas_state == 'upload') {
-	 var random_con_co2 = Math.random() * (407.4-405.1) + 405.1;
-	 var con_co2 = { value: random_con_co2.toFixed(2)};
-         // var con_humid = { value: humidity };
-         var cin = {ctname: 'cnt-co2', con: con_co2};
+	 let random_con_co2 = Math.random() * (407.4-405.1) + 405.1;
+	 let con_co2 = { value: random_con_co2.toFixed(2)};
+         // let con_humid = { value: humidity };
+         let cin = {ctname: 'cnt-co2', con: con_co2};
          console.log(JSON.stringify(cin) + ' ---->');
          upload_client.write(JSON.stringify(cin) + '<EOF>');
-               // var cin = {ctname: 'cnt-humid', con: con_humid};
+               // let cin = {ctname: 'cnt-humid', con: con_humid};
                // console.log(JSON.stringify(cin) + ' ---->');
                // upload_client.write(JSON.stringify(cin) + '<EOF>');
 	    
     }
 }
-//var con_temp = { value: 50 };
-        //var con_humid = { value: 50 };
-        //var cin = {ctname: 'cnt-temp', con: con_temp};
+//let con_temp = { value: 50 };
+        //let con_humid = { value: 50 };
+        //let cin = {ctname: 'cnt-temp', con: con_temp};
         //console.log(JSON.stringify(cin) + ' ---->');
         //upload_client.write(JSON.stringify(cin) + '<EOF>');
-        //var cin = {ctname: 'cnt-humid', con: con_humid};
+        //let cin = {ctname: 'cnt-humid', con: con_humid};
         //console.log(JSON.stringify(cin) + ' ---->');
         //upload_client.write(JSON.stringify(cin) + '<EOF>');
 
 
-var tas_download_count = 0;
+let tas_download_count = 0;
 
 function on_receive(data) {
     if (tas_state == 'connect' || tas_state == 'reconnect' || tas_state == 'upload') {
-        var data_arr = data.toString().split('<EOF>');
+        let data_arr = data.toString().split('<EOF>');
         if(data_arr.length >= 2) {
-            for (var i = 0; i < data_arr.length - 1; i++) {
-                var line = data_arr[i];
-                var sink_str = util.format('%s', line.toString());
-                var sink_obj = JSON.parse(sink_str);
+            for (let i = 0; i < data_arr.length - 1; i++) {
+                let line = data_arr[i];
+                let sink_str = util.format('%s', line.toString());
+                let sink_obj = JSON.parse(sink_str);
 
                 if (sink_obj.ctname == null || sink_obj.con == null) {
                     console.log('Received: data format mismatch');
@@ -118,7 +116,7 @@ function on_receive(data) {
                         }
                     }
                     else {
-                        for (var j = 0; j < upload_arr.length; j++) {
+                        for (let j = 0; j < upload_arr.length; j++) {
                             if (upload_arr[j].ctname == sink_obj.ctname) {
                                 console.log('ACK : ' + line + ' <----');
                                 break;
@@ -141,7 +139,7 @@ function on_receive(data) {
 }
 
 
-var myPort = null;
+let myPort = null;
 function tas_watchdog() {
     if(tas_state == 'init') {
         upload_client = new net.Socket();
@@ -149,12 +147,12 @@ function tas_watchdog() {
         upload_client.on('data', on_receive);
 
         upload_client.on('error', function(err) {
-            console.log(err);
+            // console.log(err);
             tas_state = 'reconnect';
         });
 
         upload_client.on('close', function() {
-            console.log('Connection closed');
+            // console.log('Connection closed');
             upload_client.destroy();
             tas_state = 'reconnect';
         });
@@ -168,9 +166,9 @@ function tas_watchdog() {
         upload_client.connect(useparentport, useparenthostname, function() {
             console.log('upload Connected');
             tas_download_count = 0;
-            for (var i = 0; i < download_arr.length; i++) {
+            for (let i = 0; i < download_arr.length; i++) {
                 console.log('download Connected - ' + download_arr[i].ctname + ' hello');
-                var cin = {ctname: download_arr[i].ctname, con: 'hello'};
+                let cin = {ctname: download_arr[i].ctname, con: 'hello'};
                 upload_client.write(JSON.stringify(cin) + '<EOF>');
             }
 
@@ -187,10 +185,10 @@ wdt.set_wdt(require('shortid').generate(), 3, tas_watchdog);
 
 function test() {
             if(tas_state == 'upload') {
-                for(var i = 0; i < upload_arr.length; i++) {
+                for(let i = 0; i < upload_arr.length; i++) {
                     if(upload_arr[i].ctname == 'cnt-co2') {
-                        //var cin = {ctname: upload_arr[i].ctname, con: nValue.toString()};
-                        var cin = {ctname: upload_arr[i].ctname, con: "3333333333333"};
+                        //let cin = {ctname: upload_arr[i].ctname, con: nValue.toString()};
+                        let cin = {ctname: upload_arr[i].ctname, con: "3333333333333"};
                         console.log('SEND : ' + JSON.stringify(cin) + ' ---->');
                         upload_client.write(JSON.stringify(cin) + '<EOF>');
                         break;

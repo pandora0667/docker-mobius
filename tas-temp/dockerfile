@@ -1,0 +1,11 @@
+FROM node:12.18.1-stretch
+LABEL seongwon="seongwon@edu.hanbat.ac.kr"
+
+RUN mkdir /app
+ADD ./device /app
+
+WORKDIR /app
+
+RUN npm i
+
+ENTRYPOINT [ "node", "app.js" ]

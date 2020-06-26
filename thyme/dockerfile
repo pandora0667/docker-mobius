@@ -26,5 +26,7 @@ WORKDIR $HOME/Thyme
 COPY ./nCube-Thyme-Nodejs $HOME/Thyme
 RUN npm install -g --unsafe-perm
 
+EXPOSE 3105
+
 ENTRYPOINT ["node", "thyme"]
 # CMD [ "node", "thyme" ]

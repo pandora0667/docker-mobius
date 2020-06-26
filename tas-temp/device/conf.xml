@@ -4,10 +4,10 @@
         <comport>/COM1</comport>
         <baudrate>9600</baudrate>
         <parenthostname>localhost</parenthostname>
-        <parentport>3106</parentport>
+        <parentport>3105</parentport>
     </tas>
     <upload>
-        <ctname>cnt-co2</ctname>
-        <id>co2</id>
+        <ctname>cnt-temp</ctname>
+        <id>temp</id>
     </upload>
 </m2m:conf>

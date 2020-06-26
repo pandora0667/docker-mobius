@@ -35,7 +35,7 @@ global.parent_mqttbroker    = conf.parent.mqttbroker;
 
 // my CSE information
 global.usecsetype           = 'mn'; // select 'in' or 'mn' or 'asn'
-global.usecsebase           = 'rosemary';
+global.usecsebase           = 'rosemary1';
 global.usecseid             = '/rosemary2';
 global.usecsebaseport       = conf.csebaseport;
 

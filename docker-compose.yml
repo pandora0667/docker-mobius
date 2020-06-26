@@ -28,7 +28,9 @@ services:
       - db
 
   mobius:
-    image: jusk2/mobius
+    build: 
+      context: ./mobius
+      dockerfile: dockerfile
     network_mode: host
     ports:
       - 7579:7579
@@ -38,6 +40,9 @@ services:
       - db
 
   rosemary:
+    # build: 
+    #   context: ./rosemary
+    #   dockerfile: dockerfile
     image: jusk2/rosemary
     network_mode: host
     ports:
@@ -48,8 +53,26 @@ services:
       - db
   
   thyme:
-    image: jusk2/thyme
+    build: 
+      context: ./thyme
+      dockerfile: dockerfile
     network_mode: host
+    ports: 
+      - 3105:3105
     restart: always
     depends_on:
       - db
+
+  co2:
+    build: 
+      context: ./tas-co2
+      dockerfile: dockerfile
+    network_mode: host
+    restart: always
+  
+  temp:
+    build: 
+      context: ./tas-temp 
+      dockerfile: dockerfile
+    network_mode: host
+    restart: always

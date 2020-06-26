@@ -28,13 +28,13 @@ conf.sim = 'enable'; // enable / disable
 // build cse (Mobius)
 cse.host        = '127.0.0.1'; //mobius host IP
 cse.port        = '7599'; //mobius http hosting port
-cse.name        = 'rosemary'; //mobius name
-cse.id          = '/rosemary2'; //mobius id
+cse.name        = 'rosemary'; //mobius name Mobius
+cse.id          = '/rosemary2'; //mobius id Mobius2
 cse.mqttport    = '1883'; //mqttport 
 cse.wsport      = '7573';
 
 // build ae (Thyme)
-ae.name         = 'test_iot_algae'; //thyme name 
+ae.name         = 'wisoft2'; //thyme name 
 
 ae.id           = 'S'+ae.name; //thyme id
 
@@ -50,7 +50,13 @@ var count = 0;
 // count -> 0  : arr[0]
 cnt_arr[count] = {};
 cnt_arr[count].parent = '/' + cse.name + '/' + ae.name;
-cnt_arr[count++].name = 'pontoon_titania'; //연동할 장치의 이름
+cnt_arr[count++].name = 'cnt-co2';
+
+// count -> 1-1  : arr[1]
+
+cnt_arr[count] = {};
+cnt_arr[count].parent = '/' + cse.name + '/' + ae.name;
+cnt_arr[count++].name = 'cnt-temp';
 
 // build sub
 count = 0;

@@ -22,15 +22,15 @@ let conf = {};
 // This is an async file read
 fs.readFile('conf.xml', 'utf-8', function (err, data) {
     if (err) {
-        console.log("FATAL An error occurred trying to read in the file: " + err);
-        console.log("error : set to default for configuration")
+        // console.log("FATAL An error occurred trying to read in the file: " + err);
+        // console.log("error : set to default for configuration")
     }
     else {
         let parser = new xml2js.Parser({explicitArray: false});
         parser.parseString(data, function (err, result) {
             if (err) {
-                console.log("Parsing An error occurred trying to read in the file: " + err);
-                console.log("error : set to default for configuration")
+                // console.log("Parsing An error occurred trying to read in the file: " + err);
+                // console.log("error : set to default for configuration")
             }
             else {
                 let jsonString = JSON.stringify(result);
@@ -149,12 +149,12 @@ function tas_watchdog() {
         upload_client.on('data', on_receive);
 
         upload_client.on('error', function(err) {
-            console.log(err);
+            // console.log(err);
             tas_state = 'reconnect';
         });
 
         upload_client.on('close', function() {
-            console.log('Connection closed');
+            // console.log('Connection closed');
             upload_client.destroy();
             tas_state = 'reconnect';
         });

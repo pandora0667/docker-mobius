@@ -29,4 +29,3 @@ RUN npm install -g --unsafe-perm
 EXPOSE 7599
 
 ENTRYPOINT ["node", "rosemary"]
-# CMD [ "node", "mobius" ]

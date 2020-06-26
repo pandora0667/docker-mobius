@@ -17,42 +17,42 @@
 process.env.NODE_ENV = 'production';
 //process.env.NODE_ENV = 'development';
 
-var fs = require('fs');
-var http = require('http');
-var express = require('express');
-var bodyParser = require('body-parser');
-var morgan = require('morgan');
-var util = require('util');
-var xml2js = require('xml2js');
-var url = require('url');
-var xmlbuilder = require('xmlbuilder');
-var ip = require('ip');
-var crypto = require('crypto');
-var fileStreamRotator = require('file-stream-rotator');
-var merge = require('merge');
-var https = require('https');
-var cbor = require('cbor');
-var moment = require('moment');
+let fs = require('fs');
+let http = require('http');
+let express = require('express');
+let bodyParser = require('body-parser');
+let morgan = require('morgan');
+let util = require('util');
+let xml2js = require('xml2js');
+let url = require('url');
+let xmlbuilder = require('xmlbuilder');
+let ip = require('ip');
+let crypto = require('crypto');
+let fileStreamRotator = require('file-stream-rotator');
+let merge = require('merge');
+let https = require('https');
+let cbor = require('cbor');
+let moment = require('moment');
 
-var mqtt = require('mqtt');
+let mqtt = require('mqtt');
 global.noti_mqtt = null;
 
 global.NOPRINT = 'true';
 global.ONCE = 'true';
 
-var cb = require('./mobius/cb');
-var responder = require('./mobius/responder');
-var resource = require('./mobius/resource');
-var security = require('./mobius/security');
-var fopt = require('./mobius/fopt');
-var tr = require('./mobius/tr');
-var sgn = require('./mobius/sgn');
+let cb = require('./mobius/cb');
+let responder = require('./mobius/responder');
+let resource = require('./mobius/resource');
+let security = require('./mobius/security');
+let fopt = require('./mobius/fopt');
+let tr = require('./mobius/tr');
+let sgn = require('./mobius/sgn');
 
-var db = require('./mobius/db_action');
-var db_sql = require('./mobius/sql_action');
+let db = require('./mobius/db_action');
+let db_sql = require('./mobius/sql_action');
 
 // ������ �����մϴ�.
-var app = express();
+let app = express();
 
 global.usespid              = '//keti.re.kr';
 global.usesuperuser         = 'Superman';
@@ -80,13 +80,13 @@ global.randomValue = function (qty) {
     return crypto.randomBytes(qty).toString(2);
 };
 
-var logDirectory = __dirname + '/log';
+let logDirectory = __dirname + '/log';
 
 // ensure log directory exists
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
 // create a rotating write stream
-var accessLogStream = fileStreamRotator.getStream({
+let accessLogStream = fileStreamRotator.getStream({
     date_format: 'YYYYMMDD',
     filename: logDirectory + '/access-%DATE%.log',
     frequency: 'daily',
@@ -107,7 +107,7 @@ function del_req_resource() {
 
 function del_expired_resource() {
     // this routine is that delete resource expired time exceed et of resource
-    var et = moment().utc().format('YYYYMMDDTHHmmss');
+    let et = moment().utc().format('YYYYMMDDTHHmmss');
     db_sql.delete_lookup_et(et, function (err) {
         if(!err) {
             console.log('---------------');
@@ -123,7 +123,7 @@ function noti_mqtt_begin() {
             noti_mqtt = mqtt.connect('mqtt://' + usemqttbroker + ':' + usemqttport);
         }
         else {
-            var connectOptions = {
+            let connectOptions = {
                 host: usemqttbroker,
                 port: usemqttport,
                 protocol: "mqtts",
@@ -149,11 +149,11 @@ function noti_mqtt_begin() {
     }
 }
 
-var cluster = require('cluster');
-var os = require('os');
-var cpuCount = os.cpus().length;
-var worker = [];
-var ss_ri_cache = {};
+let cluster = require('cluster');
+let os = require('os');
+let cpuCount = os.cpus().length;
+let worker = [];
+let ss_ri_cache = {};
 
 global.get_ss_ri_cache = function (name) {
     return ss_ri_cache[name];
@@ -194,9 +194,9 @@ global.del_ss_ri_cache = function (name) {
 
 function broadcast_ss_ri_cache() {
     if ( cluster.isMaster ) {
-        for (var id in cluster.workers) {
+        for (let id in cluster.workers) {
             if(cluster.workers.hasOwnProperty(id)) {
-                var worker = cluster.workers[id];
+                let worker = cluster.workers[id];
 
                 worker.send({
                     cmd: 'ss_ri:edit',
@@ -231,9 +231,9 @@ global.set_cbs_cache = function (name, val) {
 
 function broadcast_set_cbs_cache(name, val) {
     if ( cluster.isMaster ) {
-        for (var id in cluster.workers) {
+        for (let id in cluster.workers) {
             if(cluster.workers.hasOwnProperty(id)) {
-                var worker = cluster.workers[id];
+                let worker = cluster.workers[id];
 
                 worker.send({
                     cmd: 'cbs:edit_set',
@@ -266,9 +266,9 @@ global.del_cbs_cache = function (name) {
 
 function broadcast_cbs_cache() {
     if ( cluster.isMaster ) {
-        for (var id in cluster.workers) {
+        for (let id in cluster.workers) {
             if(cluster.workers.hasOwnProperty(id)) {
-                var worker = cluster.workers[id];
+                let worker = cluster.workers[id];
 
                 worker.send({
                     cmd: 'cbs:edit',
@@ -284,7 +284,7 @@ function broadcast_cbs_cache() {
     }
 }
 
-var hit_cache = {};
+let hit_cache = {};
 
 global.get_hit_cache = function (name) {
     return hit_cache[name];
@@ -311,9 +311,9 @@ global.set_hit_cache = function (name, val) {
 
 function broadcast_set_hit_cache(name, val) {
     if ( cluster.isMaster ) {
-        for (var id in cluster.workers) {
+        for (let id in cluster.workers) {
             if(cluster.workers.hasOwnProperty(id)) {
-                var worker = cluster.workers[id];
+                let worker = cluster.workers[id];
 
                 worker.send({
                     cmd: 'hit:edit_set',
@@ -332,9 +332,9 @@ function broadcast_set_hit_cache(name, val) {
 
 function broadcast_hit_cache() {
     if ( cluster.isMaster ) {
-        for (var id in cluster.workers) {
+        for (let id in cluster.workers) {
             if(cluster.workers.hasOwnProperty(id)) {
-                var worker = cluster.workers[id];
+                let worker = cluster.workers[id];
 
                 worker.send({
                     cmd: 'hit:edit',
@@ -350,12 +350,12 @@ function broadcast_hit_cache() {
     }
 }
 
-var use_clustering = 1;
-var worker_init_count = 0;
+let use_clustering = 1;
+let worker_init_count = 0;
 if (use_clustering) {
     if (cluster.isMaster) {
         console.log('CPU Count:', cpuCount);
-        for (var i = 0; i < cpuCount; i++) {
+        for (let i = 0; i < cpuCount; i++) {
             worker[i] = cluster.fork();
         }
 
@@ -364,15 +364,15 @@ if (use_clustering) {
                 worker_init_count++;
                 if(worker_init_count >= cpuCount) {
                     try {
-                        var hitStr = fs.readFileSync('hit.json', 'utf8');
+                        let hitStr = fs.readFileSync('hit.json', 'utf8');
                         hit_cache = JSON.parse(hitStr);
 
-                        var moment = require('moment');
-                        var a = moment().utc();
-                        var cur_t = a.format('YYYYMMDD');
+                        let moment = require('moment');
+                        let a = moment().utc();
+                        let cur_t = a.format('YYYYMMDD');
                         if (!hit_cache.hasOwnProperty(cur_t)) {
                             hit_cache[cur_t] = [];
-                            for (var h = 0; h < 24; h++) {
+                            for (let h = 0; h < 24; h++) {
                                 hit_cache[cur_t].push({});
                             }
                         }
@@ -501,7 +501,7 @@ if (use_clustering) {
                     });
                 }
                 else {
-                    var options = {
+                    let options = {
                         key: fs.readFileSync('server-key.pem'),
                         cert: fs.readFileSync('server-crt.pem'),
                         ca: fs.readFileSync('ca-crt.pem')
@@ -540,7 +540,7 @@ else {
                     });
                 }
                 else {
-                    var options = {
+                    let options = {
                         key: fs.readFileSync('server-key.pem'),
                         cert: fs.readFileSync('server-crt.pem'),
                         ca: fs.readFileSync('ca-crt.pem')
@@ -585,12 +585,12 @@ global.get_ri_list_sri = function (request, response, sri_list, ri_list, count, 
 };
 
 global.update_route = function (callback) {
-    var cse_poa = {};
+    let cse_poa = {};
     db_sql.select_csr_like(usecsebase, function (err, results_csr) {
         if (!err) {
-            for (var i = 0; i < results_csr.length; i++) {
-                var poa_arr = JSON.parse(results_csr[i].poa);
-                for (var j = 0; j < poa_arr.length; j++) {
+            for (let i = 0; i < results_csr.length; i++) {
+                let poa_arr = JSON.parse(results_csr[i].poa);
+                for (let j = 0; j < poa_arr.length; j++) {
                     if (url.parse(poa_arr[j]).protocol == 'http:' || url.parse(poa_arr[j]).protocol == 'https:') {
                         cse_poa[results_csr[i].ri.split('/')[2]] = poa_arr[j];
                     }
@@ -609,11 +609,11 @@ function make_short_nametype(body_Obj) {
         delete body_Obj[Object.keys(body_Obj)[0]]['$'];
     }
 
-    var rootnm = Object.keys(body_Obj)[0].split(':')[1];
+    let rootnm = Object.keys(body_Obj)[0].split(':')[1];
     body_Obj[rootnm] = body_Obj[Object.keys(body_Obj)[0]];
     delete body_Obj[Object.keys(body_Obj)[0]];
 
-    for (var attr in body_Obj[rootnm]) {
+    for (let attr in body_Obj[rootnm]) {
         if (body_Obj[rootnm].hasOwnProperty(attr)) {
             if (typeof body_Obj[rootnm][attr] === 'boolean') {
                 body_Obj[rootnm][attr] = body_Obj[rootnm][attr].toString();
@@ -632,17 +632,17 @@ function make_short_nametype(body_Obj) {
 global.make_json_obj = function(bodytype, str, callback) {
     try {
         if (bodytype === 'xml') {
-            var message = str;
-            var parser = new xml2js.Parser({explicitArray: false});
+            let message = str;
+            let parser = new xml2js.Parser({explicitArray: false});
             parser.parseString(message.toString(), function (err, result) {
                 if (err) {
                     console.log('[mqtt make json obj] xml2js parser error]');
                     callback('0');
                 }
                 else {
-                    for (var prop in result) {
+                    for (let prop in result) {
                         if (result.hasOwnProperty(prop)) {
-                            for (var attr in result[prop]) {
+                            for (let attr in result[prop]) {
                                 if (result[prop].hasOwnProperty(attr)) {
                                     if (attr == '$') {
                                         delete result[prop][attr];
@@ -669,7 +669,7 @@ global.make_json_obj = function(bodytype, str, callback) {
             });
         }
         else {
-            var result = JSON.parse(str);
+            let result = JSON.parse(str);
             callback('1', result);
         }
     }
@@ -680,9 +680,9 @@ global.make_json_obj = function(bodytype, str, callback) {
 };
 
 global.make_json_arraytype = function (body_Obj) {
-    for (var prop in body_Obj) {
+    for (let prop in body_Obj) {
         if (body_Obj.hasOwnProperty(prop)) {
-            for (var attr in body_Obj[prop]) {
+            for (let attr in body_Obj[prop]) {
                 if (body_Obj[prop].hasOwnProperty(attr)) {
                     if (attr == 'srv' || attr == 'aa' || attr == 'at' || attr == 'poa' || attr == 'lbl' || attr == 'acpi' || attr == 'srt' || attr == 'nu' || attr == 'mid' || attr == 'macp' || attr == 'rels') {
                         if (body_Obj[prop][attr]) {
@@ -697,12 +697,12 @@ global.make_json_arraytype = function (body_Obj) {
                     }
 
                     if (attr == 'rqps') {
-                        var rqps_type = getType(body_Obj[prop][attr]);
+                        let rqps_type = getType(body_Obj[prop][attr]);
                         if (rqps_type === 'array') {
 
                         }
                         else if (rqps_type === 'object') {
-                            var temp = body_Obj[prop][attr];
+                            let temp = body_Obj[prop][attr];
                             body_Obj[prop][attr] = [];
                             body_Obj[prop][attr].push(temp);
                         }
@@ -728,7 +728,7 @@ global.make_json_arraytype = function (body_Obj) {
                                     body_Obj[prop][attr].acr[0] = temp;
                                 }
 
-                                for (var acr_idx in body_Obj[prop][attr].acr) {
+                                for (let acr_idx in body_Obj[prop][attr].acr) {
                                     if (body_Obj[prop][attr].acr.hasOwnProperty(acr_idx)) {
                                         if (body_Obj[prop][attr].acr[acr_idx].acor) {
                                             body_Obj[prop][attr].acr[acr_idx].acor = body_Obj[prop][attr].acr[acr_idx].acor.split(' ');
@@ -741,8 +741,8 @@ global.make_json_arraytype = function (body_Obj) {
                                                 body_Obj[prop][attr].acr[acr_idx].acco[0] = temp;
                                             }
 
-                                            var acco = body_Obj[prop][attr].acr[acr_idx].acco;
-                                            for(var acco_idx in acco) {
+                                            let acco = body_Obj[prop][attr].acr[acr_idx].acco;
+                                            for(let acco_idx in acco) {
                                                 if(acco.hasOwnProperty(acco_idx)) {
                                                     if (acco[acco_idx].hasOwnProperty('acip')) {
                                                         if (acco[acco_idx].acip.hasOwnProperty('ipv4')) {
@@ -802,7 +802,7 @@ function check_body_format(request) {
 }
 
 function check_http_body(request, response, callback) {
-    var body_Obj = {};
+    let body_Obj = {};
 
     if (request.body == "") {
         responder.error_result(request, response, 400, 4000, 'body is empty');
@@ -813,7 +813,7 @@ function check_http_body(request, response, callback) {
     //console.log(request.body);
 
     try {
-        var content_type = request.headers['content-type'].split(';');
+        let content_type = request.headers['content-type'].split(';');
     }
     catch (e) {
         responder.error_result(request, response, 400, 4000, 'content-type is none');
@@ -833,7 +833,7 @@ function check_http_body(request, response, callback) {
 
     if (request.headers.usebodytype === 'xml') {
         try {
-            var parser = new xml2js.Parser({explicitArray: false});
+            let parser = new xml2js.Parser({explicitArray: false});
             parser.parseString(request.body.toString(), function (err, result) {
                 if (err) {
                     responder.error_result(request, response, 400, 4000, 'do not parse xml body' + err.message);
@@ -855,7 +855,7 @@ function check_http_body(request, response, callback) {
     }
     else if (request.headers.usebodytype === 'cbor') {
         try {
-            var encoded = request.body;
+            let encoded = request.body;
             cbor.decodeFirst(encoded, function(err, body_Obj) {
                 if (err) {
                     responder.error_result(request, response, 400, 4000, 'do not parse cbor body');
@@ -896,16 +896,16 @@ function check_http_body(request, response, callback) {
 function check_http(request, response, callback) {
     request.headers.rootnm = 'dbg';
 
-    var body_Obj = {};
+    let body_Obj = {};
 
     if (request.query.real == 4) {
         if (request.method == 'POST' || request.method == 'PUT') {
             try {
-                var content_type = request.headers['content-type'].split(';');
-                var ty = '99';
-                for(var i in content_type) {
+                let content_type = request.headers['content-type'].split(';');
+                let ty = '99';
+                for(let i in content_type) {
                     if(content_type.hasOwnProperty(i)) {
-                        var ty_arr = content_type[i].replace(/ /g, '').split('=');
+                        let ty_arr = content_type[i].replace(/ /g, '').split('=');
                         if(ty_arr[0].replace(/ /g, '') == 'ty') {
                             ty = ty_arr[1].replace(' ', '');
                             break;
@@ -920,7 +920,7 @@ function check_http(request, response, callback) {
                 }
 
                 body_Obj = JSON.parse(request.body.toString());
-                var rootnm = Object.keys(body_Obj)[0].split(':')[1];
+                let rootnm = Object.keys(body_Obj)[0].split(':')[1];
                 body_Obj[rootnm] = body_Obj[Object.keys(body_Obj)[0]];
                 delete body_Obj[Object.keys(body_Obj)[0]];
                 request.headers.rootnm = rootnm;
@@ -966,10 +966,10 @@ function check_http(request, response, callback) {
         }
     }
     else {
-        var allow = 1;
+        let allow = 1;
         if(allowed_ae_ids.length > 0) {
             allow = 0;
-            for(var idx in allowed_ae_ids) {
+            for(let idx in allowed_ae_ids) {
                 if(allowed_ae_ids.hasOwnProperty(idx)) {
                     if(usecseid == request.headers['x-m2m-origin']) {
                         allow = 1;
@@ -990,18 +990,18 @@ function check_http(request, response, callback) {
         }
     }
 
-    var url_arr = url.parse(request.url).pathname.split('/');
-    var last_url = url_arr[url_arr.length - 1];
+    let url_arr = url.parse(request.url).pathname.split('/');
+    let last_url = url_arr[url_arr.length - 1];
 
     if (request.method == 'POST' || request.method == 'PUT') {
         check_http_body(request, response, function (rsc, body_Obj, content_type, request, response) {
             if (rsc == '1') {
                 if (request.method == 'POST') {
                     try {
-                        var ty = '99';
-                        for(var i in content_type) {
+                        let ty = '99';
+                        for(let i in content_type) {
                             if(content_type.hasOwnProperty(i)) {
-                                var ty_arr = content_type[i].replace(/ /g, '').split('=');
+                                let ty_arr = content_type[i].replace(/ /g, '').split('=');
                                 if(ty_arr[0].replace(/ /g, '') == 'ty') {
                                     ty = ty_arr[1].replace(' ', '');
                                     break;
@@ -1033,10 +1033,10 @@ function check_http(request, response, callback) {
                         }
 
                         if(ty == '2') {
-                            var allow = 1;
+                            let allow = 1;
                             if(allowed_app_ids.length > 0) {
                                 allow = 0;
-                                for(var idx in allowed_app_ids) {
+                                for(let idx in allowed_app_ids) {
                                     if(allowed_app_ids.hasOwnProperty(idx)) {
                                         if(allowed_app_ids[idx] == body_Obj.ae.api) {
                                             allow = 1;
@@ -1108,8 +1108,8 @@ function check_http(request, response, callback) {
 
                     if (responder.typeRsrc[ty] != Object.keys(body_Obj)[0]) {
                         if(responder.typeRsrc[ty] == 'mgo') {
-                            var support_mgo = 0;
-                            for (var prop in responder.mgoType) {
+                            let support_mgo = 0;
+                            for (let prop in responder.mgoType) {
                                 if(responder.mgoType.hasOwnProperty(prop)) {
                                     if (responder.mgoType[prop] == Object.keys(body_Obj)[0]) {
                                         support_mgo = 1;
@@ -1133,7 +1133,7 @@ function check_http(request, response, callback) {
                 }
                 else { // PUT
                     ty = '99';
-                    for (var ty_idx in responder.typeRsrc) {
+                    for (let ty_idx in responder.typeRsrc) {
                         if (responder.typeRsrc.hasOwnProperty(ty_idx)) {
                             if ((ty_idx == 4) && (responder.typeRsrc[ty_idx] == Object.keys(body_Obj)[0])) {
                                 responder.error_result(request, response, 405, 4005, 'Update cin is not supported');
@@ -1152,7 +1152,7 @@ function check_http(request, response, callback) {
                                 }
                             }
                             else if (ty_idx == 13) {
-                                for (var mgo_idx in responder.mgoType) {
+                                for (let mgo_idx in responder.mgoType) {
                                     if (responder.mgoType.hasOwnProperty(mgo_idx)) {
                                         if ((responder.mgoType[mgo_idx] == Object.keys(body_Obj)[0])) {
                                             ty = ty_idx;
@@ -1175,7 +1175,7 @@ function check_http(request, response, callback) {
 
                 for (prop in body_Obj) {
                     if (body_Obj.hasOwnProperty(prop)) {
-                        for (var attr in body_Obj[prop]) {
+                        for (let attr in body_Obj[prop]) {
                             if (body_Obj[prop].hasOwnProperty(attr)) {
                                 if(attr == 'aa' || attr == 'at' || attr == 'poa' || attr == 'acpi' || attr == 'srt' ||
                                     attr == 'nu' || attr == 'mid' || attr == 'macp' || attr == 'rels' || attr == 'rqps' || attr == 'srv') {
@@ -1227,8 +1227,8 @@ function check_http(request, response, callback) {
                                             return '0';
                                         }
 
-                                        var acr = body_Obj[prop][attr].acr;
-                                        for (var acr_idx in acr) {
+                                        let acr = body_Obj[prop][attr].acr;
+                                        for (let acr_idx in acr) {
                                             if (acr.hasOwnProperty(acr_idx)) {
                                                 if (acr[acr_idx].acor) {
                                                     if (!Array.isArray(acr[acr_idx].acor)) {
@@ -1248,9 +1248,9 @@ function check_http(request, response, callback) {
                                                         callback('0', body_Obj, request, response);
                                                         return '0';
                                                     }
-                                                    for (var acco_idx in acr[acr_idx].acco) {
+                                                    for (let acco_idx in acr[acr_idx].acco) {
                                                         if (acr[acr_idx].acco.hasOwnProperty(acco_idx)) {
-                                                            var acco = acr[acr_idx].acco[acco_idx];
+                                                            let acco = acr[acr_idx].acco[acco_idx];
                                                             if (acco.acip) {
                                                                 if (acco.acip['ipv4']) {
                                                                     if (!Array.isArray(acco.acip['ipv4'])) {
@@ -1342,14 +1342,14 @@ function check_http(request, response, callback) {
 }
 
 function check_resource(request, response, body_Obj, callback) {
-    var ri = url.parse(request.url).pathname;
+    let ri = url.parse(request.url).pathname;
 
-    var chk_fopt = ri.split('/fopt');
+    let chk_fopt = ri.split('/fopt');
     if(chk_fopt.length == 2) {
         //if (chk_fopt[1] == '') {
-            //var url_arr = ri.split('/');
-            //var last_url = url_arr[url_arr.length - 1];
-            //var op = 'direct';
+            //let url_arr = ri.split('/');
+            //let last_url = url_arr[url_arr.length - 1];
+            //let op = 'direct';
             //if (last_url == 'fanoutpoint' || last_url == 'fopt') {
                 //ri = ri.replace('/fanoutpoint', '');
                 //ri = ri.replace('/fopt', '');
@@ -1373,7 +1373,7 @@ function check_resource(request, response, body_Obj, callback) {
                         }
                     }
                     else {
-                        var code = result_Obj.message;
+                        let code = result_Obj.message;
                         result_Obj = {};
                         result_Obj['dbg'] = code;
                         responder.response_result(request, response, 500, result_Obj, 5000, request.url, result_Obj['dbg']);
@@ -1391,10 +1391,10 @@ function check_resource(request, response, body_Obj, callback) {
         console.log('X-M2M-Origin: ' + request.headers['x-m2m-origin']);
         console.log(body_Obj);
 
-        var url_arr = ri.split('/');
-        var last_url = url_arr[url_arr.length - 1];
-        var op = 'direct';
-        var resource_Obj = {};
+        let url_arr = ri.split('/');
+        let last_url = url_arr[url_arr.length - 1];
+        let op = 'direct';
+        let resource_Obj = {};
 
         if (last_url == 'latest' || last_url == 'la') {
             ri = ri.replace('/latest', '');
@@ -1404,7 +1404,7 @@ function check_resource(request, response, body_Obj, callback) {
                 if (!err) {
                     if (parent_Comm.length == 1) {
                         if (parent_Comm[0].ty == '3') {
-                            var cur_ty = '4';
+                            let cur_ty = '4';
                         }
                         else if (parent_Comm[0].ty == '29') {
                             cur_ty = '30';
@@ -1419,10 +1419,10 @@ function check_resource(request, response, body_Obj, callback) {
                         db_sql.select_resource(responder.typeRsrc[parent_Comm[0].ty], parent_Comm[0].ri, function (err, parent_Spec) {
                             if (!err) {
                                 if (parent_Spec.length == 1) {
-                                    var cur_d = new Date();
-                                    var cur_cni = parent_Spec[0].cni;
-                                    //var cur_lim = (request.query.hasOwnProperty('lim')) ? request.query.lim : '1';
-                                    var cur_lim = '1';
+                                    let cur_d = new Date();
+                                    let cur_cni = parent_Spec[0].cni;
+                                    //let cur_lim = (request.query.hasOwnProperty('lim')) ? request.query.lim : '1';
+                                    let cur_lim = '1';
                                     check_cbs_cache(ri, function (cni, cbs, st) {
                                         if(cni > 0) {
                                             db_sql.select_latest_resource(ri, cur_ty, 1, st, function (err, result_Obj) {
@@ -1440,7 +1440,7 @@ function check_resource(request, response, body_Obj, callback) {
                                                     }
                                                 }
                                                 else {
-                                                    var code = result_Obj.message;
+                                                    let code = result_Obj.message;
                                                     result_Obj = {};
                                                     result_Obj['dbg'] = code;
                                                     responder.response_result(request, response, 500, result_Obj, 5000, request.url, result_Obj['dbg']);
@@ -1477,7 +1477,7 @@ function check_resource(request, response, body_Obj, callback) {
                     }
                 }
                 else {
-                    var code = parent_Comm.message;
+                    let code = parent_Comm.message;
                     parent_Comm = {};
                     parent_Comm['dbg'] = code;
                     responder.response_result(request, response, 500, parent_Comm, 5000, request.url, parent_Comm['dbg']);
@@ -1507,7 +1507,7 @@ function check_resource(request, response, body_Obj, callback) {
                             }
                         }
                         else {
-                            var code = result_Obj.message;
+                            let code = result_Obj.message;
                             result_Obj = {};
                             result_Obj['dbg'] = code;
                             responder.response_result(request, response, 500, result_Obj, 5000, request.url, result_Obj['dbg']);
@@ -1530,7 +1530,7 @@ function check_resource(request, response, body_Obj, callback) {
             db_sql.select_direct_lookup(ri, function (err, comm_Obj) {
                 if (!err) {
                     if (comm_Obj.length == 1) {
-                        var ty = comm_Obj[0].ty;
+                        let ty = comm_Obj[0].ty;
                         if(ty == 3) {
                             check_cbs_cache(ri, function (cni, cbs, st) {
                                 db_sql.select_resource(responder.typeRsrc[ty], comm_Obj[0].ri, function (err, spec_Obj) {
@@ -1607,14 +1607,14 @@ function check_resource(request, response, body_Obj, callback) {
 }
 
 function check_rt_query(request, response, body_Obj, callback) {
-    //var ri = url.parse(request.url).pathname;
+    //let ri = url.parse(request.url).pathname;
 
-    //var url_arr = ri.split('/');
-    //var last_url = url_arr[url_arr.length-1];
-    //var op = 'direct';
+    //let url_arr = ri.split('/');
+    //let last_url = url_arr[url_arr.length-1];
+    //let op = 'direct';
 
     if (request.query.real == 4) {
-        var check_Obj = {};
+        let check_Obj = {};
         check_Obj.ty = '3';
         callback('1', check_Obj, 'direct', request, response, body_Obj);
         return'1';
@@ -1635,10 +1635,10 @@ function check_rt_query(request, response, body_Obj, callback) {
         }
 
         // first create request resource under CSEBase
-        var temp_rootnm = request.headers.rootnm;
-        //var temp_rt = request.query.rt;
-        var ty = '17';
-        var rt_body_Obj = {req: {}};
+        let temp_rootnm = request.headers.rootnm;
+        //let temp_rt = request.query.rt;
+        let ty = '17';
+        let rt_body_Obj = {req: {}};
         request.headers.rootnm = Object.keys(rt_body_Obj)[0];
         request.query.rt = 3;
         resource.create(request, response, ty, rt_body_Obj, function (rsc) {
@@ -1711,7 +1711,7 @@ function lookup_create(request, response) {
                 return rsc;
             }
 
-            var rootnm = request.headers.rootnm;
+            let rootnm = request.headers.rootnm;
 
             tr.check(request, parent_comm.ri, body_Obj, function (rsc, body_Obj) {
                 if (rsc == '0') {
@@ -1800,7 +1800,7 @@ function lookup_create(request, response) {
                     //}
 
                     // 20171212 remove inherit acp of parent to current resource
-                    // for (var index in parent_comm.acpi) {
+                    // for (let index in parent_comm.acpi) {
                     //     if (parent_comm.acpi.hasOwnProperty(index)) {
                     //         body_Obj[rootnm].acpi.push(parent_comm.acpi[index]);
                     //     }
@@ -1856,7 +1856,7 @@ function lookup_create(request, response) {
                             }
 
                             if (ty == 23) {
-                                var access_value = '3';
+                                let access_value = '3';
                             }
                             else {
                                 access_value = '1';
@@ -1885,7 +1885,7 @@ function lookup_create(request, response) {
                     // }
                     // else {
                     //     if (ty == 23) {
-                    //         var access_value = '3';
+                    //         let access_value = '3';
                     //     }
                     //     else {
                     //         access_value = '1';
@@ -2052,11 +2052,11 @@ function lookup_update(request, response) {
                                 }
                             }
 
-                            var acpi_check = 0;
-                            var other_check = 0;
-                            for(var rootnm in body_Obj) {
+                            let acpi_check = 0;
+                            let other_check = 0;
+                            for(let rootnm in body_Obj) {
                                 if(body_Obj.hasOwnProperty(rootnm)) {
-                                    for(var attr in body_Obj[rootnm]) {
+                                    for(let attr in body_Obj[rootnm]) {
                                         if(body_Obj[rootnm].hasOwnProperty(attr)) {
                                             if(attr == 'acpi') {
                                                 acpi_check++;
@@ -2122,7 +2122,7 @@ function lookup_delete(request, response) {
 
             tr.check(request, results_comm.ri, body_Obj, function (rsc, body_Obj) {
                 if (rsc == '0') {
-                    var body_Obj = {};
+                    let body_Obj = {};
                     body_Obj['dbg'] = resultStatusCode['4230'];
                     responder.response_result(request, response, 423, body_Obj, 4230, request.url, resultStatusCode['4230']);
                     return '0';
@@ -2176,7 +2176,7 @@ function lookup_delete(request, response) {
                                 makeObject(results_spec[0]);
                                 results_comm = merge(results_comm, results_spec[0]);
 
-                                for(var idx in cbs_cache) {
+                                for(let idx in cbs_cache) {
                                     if(cbs_cache.hasOwnProperty(idx)) {
                                         if(idx.includes(results_comm.ri)) {
                                             delete cbs_cache[idx];
@@ -2217,11 +2217,11 @@ function lookup_delete(request, response) {
 
 function updateHitCount(binding) {
     try {
-        var _hit = get_all_hit_cache();
+        let _hit = get_all_hit_cache();
 
-        var a = moment().utc();
-        var cur_t = a.format('YYYYMMDD');
-        var h = a.hours();
+        let a = moment().utc();
+        let cur_t = a.format('YYYYMMDD');
+        let h = a.hours();
 
         if (_hit.hasOwnProperty(cur_t)) {
             _hit[cur_t][h][binding]++;
@@ -2231,7 +2231,7 @@ function updateHitCount(binding) {
         }
         else {
             _hit[cur_t] = [];
-            for (var i = 0; i < 24; i++) {
+            for (let i = 0; i < 24; i++) {
                 _hit[cur_t].push({});
             }
             _hit[cur_t][h][binding]++;
@@ -2246,13 +2246,13 @@ function updateHitCount(binding) {
 
 global.elapsed_hrstart = {};
 
-var onem2mParser = bodyParser.text(
+let onem2mParser = bodyParser.text(
     {
         limit: '1mb',
         type: 'application/onem2m-resource+xml;application/xml;application/json;application/vnd.onem2m-res+xml;application/vnd.onem2m-res+json'
     }
 );
-//var onem2mParser = bodyParser.text({ limit: '1mb', type: '*/*' });
+//let onem2mParser = bodyParser.text({ limit: '1mb', type: '*/*' });
 
 
 //////// contribution code
@@ -2273,7 +2273,7 @@ app.post(onem2mParser, function (request, response) {
     // elapsed_hrstart[request.headers.elapsed_tid] = process.hrtime();
     // console.time(request.headers.elapsed_tid);
 
-    var fullBody = '';
+    let fullBody = '';
     request.on('data', function (chunk) {
         fullBody += chunk.toString();
     });
@@ -2298,10 +2298,10 @@ app.post(onem2mParser, function (request, response) {
 
         check_body_format(request);
 
-        var absolute_url = request.url.replace('\/_\/', '\/\/').split('#')[0];
+        let absolute_url = request.url.replace('\/_\/', '\/\/').split('#')[0];
         absolute_url = absolute_url.replace(usespid, '/~');
         absolute_url = absolute_url.replace(/\/~\/[^\/]+\/?/, '/');
-        var absolute_url_arr = absolute_url.split('/');
+        let absolute_url_arr = absolute_url.split('/');
 
         console.log('\n' + request.method + ' : ' + request.url);
         //console.log('HTTP BODY: ' + request.body);
@@ -2346,7 +2346,7 @@ app.get(onem2mParser, function (request, response) {
     // elapsed_hrstart[elapsed_tid] = process.hrtime();
     // console.time(elapsed_tid);
 
-    var fullBody = '';
+    let fullBody = '';
     request.on('data', function (chunk) {
         fullBody += chunk.toString();
     });
@@ -2374,10 +2374,10 @@ app.get(onem2mParser, function (request, response) {
         request.url = request.url.replace('%23', '#'); // convert '%23' to '#' of url
         request.hash = url.parse(request.url).hash;
 
-        var absolute_url = request.url.replace('\/_\/', '\/\/').split('#')[0];
+        let absolute_url = request.url.replace('\/_\/', '\/\/').split('#')[0];
         absolute_url = absolute_url.replace(usespid, '/~');
         absolute_url = absolute_url.replace(/\/~\/[^\/]+\/?/, '/');
-        var absolute_url_arr = absolute_url.split('/');
+        let absolute_url_arr = absolute_url.split('/');
 
         console.log('\n' + request.method + ' : ' + request.url);
         //console.log('HTTP BODY: ' + request.body);
@@ -2389,7 +2389,7 @@ app.get(onem2mParser, function (request, response) {
                 absolute_url = (results.length == 0) ? absolute_url : ((results[0].hasOwnProperty('ri')) ? absolute_url.replace('/' + absolute_url_arr[1], results[0].ri) : absolute_url);
 
                 if (url.parse(absolute_url).pathname == '/hit') {
-                    var _hit = get_all_hit_cache();
+                    let _hit = get_all_hit_cache();
                     response.status(200).end(JSON.stringify(_hit, null, 4));
                     return;
                 }
@@ -2397,7 +2397,7 @@ app.get(onem2mParser, function (request, response) {
                 if (url.parse(absolute_url).pathname == '/total_ae') {
                     db_sql.select_sum_ae(function (err, result) {
                         if(!err) {
-                            var total_ae = result[0];
+                            let total_ae = result[0];
                             response.status(200).end(JSON.stringify(total_ae, null, 4));
                         }
                     });
@@ -2407,7 +2407,7 @@ app.get(onem2mParser, function (request, response) {
                 if (url.parse(absolute_url).pathname == '/total_cbs') {
                     db_sql.select_sum_cbs(function (err, result) {
                         if(!err) {
-                            var total_cbs = result[0];
+                            let total_cbs = result[0];
                             response.status(200).end(JSON.stringify(total_cbs, null, 4));
                         }
                     });
@@ -2438,7 +2438,7 @@ app.put(onem2mParser, function (request, response) {
     // elapsed_hrstart[elapsed_tid] = process.hrtime();
     // console.time(elapsed_tid);
 
-    var fullBody = '';
+    let fullBody = '';
     request.on('data', function (chunk) {
         fullBody += chunk.toString();
     });
@@ -2463,10 +2463,10 @@ app.put(onem2mParser, function (request, response) {
 
         check_body_format(request);
 
-        var absolute_url = request.url.replace('\/_\/', '\/\/').split('#')[0];
+        let absolute_url = request.url.replace('\/_\/', '\/\/').split('#')[0];
         absolute_url = absolute_url.replace(usespid, '/~');
         absolute_url = absolute_url.replace(/\/~\/[^\/]+\/?/, '/');
-        var absolute_url_arr = absolute_url.split('/');
+        let absolute_url_arr = absolute_url.split('/');
 
         console.log('\n' + request.method + ' : ' + request.url);
         //console.log('HTTP BODY: ' + request.body);
@@ -2503,7 +2503,7 @@ app.delete(onem2mParser, function (request, response) {
     // elapsed_hrstart[elapsed_tid] = process.hrtime();
     // console.time(elapsed_tid);
 
-    var fullBody = '';
+    let fullBody = '';
     request.on('data', function (chunk) {
         fullBody += chunk.toString();
     });
@@ -2528,10 +2528,10 @@ app.delete(onem2mParser, function (request, response) {
 
         check_body_format(request);
 
-        var absolute_url = request.url.replace('\/_\/', '\/\/').split('#')[0];
+        let absolute_url = request.url.replace('\/_\/', '\/\/').split('#')[0];
         absolute_url = absolute_url.replace(usespid, '/~');
         absolute_url = absolute_url.replace(/\/~\/[^\/]+\/?/, '/');
-        var absolute_url_arr = absolute_url.split('/');
+        let absolute_url_arr = absolute_url.split('/');
 
         console.log('\n' + request.method + ' : ' + request.url);
         //console.log('HTTP BODY: ' + request.body);
@@ -2572,13 +2572,13 @@ function check_notification(request, url, callback) {
             if(request.headers['content-type'].includes('xml')) {
                 request.headers.usebodytype = 'xml';
                 try {
-                    var parser = new xml2js.Parser({explicitArray: false});
+                    let parser = new xml2js.Parser({explicitArray: false});
                     parser.parseString(request.body.toString(), function (err, body_Obj) {
                         if (err) {
                             callback('0', 400, 4000, 'do not parse xml body' + err.message);
                         }
                         else {
-                            var rootnm = Object.keys(body_Obj)[0].split(':')[1];
+                            let rootnm = Object.keys(body_Obj)[0].split(':')[1];
                             if(rootnm == 'sgn') {
                                 callback('notify');
                             }
@@ -2595,13 +2595,13 @@ function check_notification(request, url, callback) {
             else if(request.headers['content-type'].includes('cbor')) {
                 request.headers.usebodytype = 'cbor';
                 try {
-                    var encoded = request.body;
+                    let encoded = request.body;
                     cbor.decodeFirst(encoded, function(err, body_Obj) {
                         if (err) {
                             callback('0', 400, 4000, 'do not parse cbor body');
                         }
                         else {
-                            var rootnm = Object.keys(body_Obj)[0].split(':')[1];
+                            let rootnm = Object.keys(body_Obj)[0].split(':')[1];
                             if(rootnm == 'sgn') {
                                 callback('notify');
                             }
@@ -2618,8 +2618,8 @@ function check_notification(request, url, callback) {
             else {
                 request.headers.usebodytype = 'json';
                 try {
-                    var body_Obj = JSON.parse(request.body.toString());
-                    var rootnm = Object.keys(body_Obj)[0].split(':')[1];
+                    let body_Obj = JSON.parse(request.body.toString());
+                    let rootnm = Object.keys(body_Obj)[0].split(':')[1];
                     if(rootnm == 'sgn') {
                         callback('notify');
                     }
@@ -2639,15 +2639,15 @@ function check_notification(request, url, callback) {
 }
 
 function check_ae(absolute_url, request, response) {
-    var ri = absolute_url;
+    let ri = absolute_url;
     console.log('[check_ae] : ' + ri);
     db_sql.select_ae(ri, function (err, result_ae) {
         if (!err) {
             if (result_ae.length == 1) {
-                var point = {};
-                var poa_arr = JSON.parse(result_ae[0].poa);
-                for (var i = 0; i < poa_arr.length; i++) {
-                    var poa = url.parse(poa_arr[i]);
+                let point = {};
+                let poa_arr = JSON.parse(result_ae[0].poa);
+                for (let i = 0; i < poa_arr.length; i++) {
+                    let poa = url.parse(poa_arr[i]);
                     if (poa.protocol == 'http:') {
                         console.log('send notification to ' + poa_arr[i]);
 
@@ -2684,16 +2684,16 @@ function check_ae(absolute_url, request, response) {
 }
 
 function check_csr(absolute_url, request, response) {
-    var ri = util.format('/%s/%s', usecsebase, url.parse(absolute_url).pathname.split('/')[1]);
+    let ri = util.format('/%s/%s', usecsebase, url.parse(absolute_url).pathname.split('/')[1]);
     console.log('[check_csr] : ' + ri);
     db_sql.select_csr(ri, function (err, result_csr) {
         if (!err) {
             if (result_csr.length == 1) {
-                var point = {};
+                let point = {};
                 point.forwardcbname = result_csr[0].cb.replace('/', '');
-                var poa_arr = JSON.parse(result_csr[0].poa);
-                for (var i = 0; i < poa_arr.length; i++) {
-                    var poa = url.parse(poa_arr[i]);
+                let poa_arr = JSON.parse(result_csr[0].poa);
+                for (let i = 0; i < poa_arr.length; i++) {
+                    let poa = url.parse(poa_arr[i]);
                     if (poa.protocol == 'http:') {
                         point.forwardcbhost = poa.hostname;
                         point.forwardcbport = poa.port;
@@ -2728,7 +2728,7 @@ function check_csr(absolute_url, request, response) {
 
 
 function notify_http(hostname, port, path, request, response) {
-    var options = {
+    let options = {
         hostname: hostname,
         port: port,
         path: path,
@@ -2736,8 +2736,8 @@ function notify_http(hostname, port, path, request, response) {
         headers: request.headers
     };
 
-    var req = http.request(options, function (res) {
-        var fullBody = '';
+    let req = http.request(options, function (res) {
+        let fullBody = '';
         res.on('data', function (chunk) {
             fullBody += chunk.toString();
         });
@@ -2793,7 +2793,7 @@ function notify_http(hostname, port, path, request, response) {
 }
 
 function forward_http(forwardcbhost, forwardcbport, request, response) {
-    var options = {
+    let options = {
         hostname: forwardcbhost,
         port: forwardcbport,
         path: request.url,
@@ -2801,8 +2801,8 @@ function forward_http(forwardcbhost, forwardcbport, request, response) {
         headers: request.headers
     };
 
-    var req = http.request(options, function (res) {
-        var fullBody = '';
+    let req = http.request(options, function (res) {
+        let fullBody = '';
         res.on('data', function (chunk) {
             fullBody += chunk.toString();
         });
