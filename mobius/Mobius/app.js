@@ -46,7 +46,6 @@ var sgn = require('./mobius/sgn');
 var db = require('./mobius/db_action');
 var db_sql = require('./mobius/sql_action');
 
-// ������ �����մϴ�.
 var app = express();
 
 global.usespid              = '//keti.re.kr';
