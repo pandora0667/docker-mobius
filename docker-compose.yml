@@ -30,7 +30,7 @@ services:
   mobius:
     build: 
       context: ./mobius
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     network_mode: host
     ports:
       - 7579:7579
@@ -55,7 +55,7 @@ services:
   thyme:
     build: 
       context: ./thyme
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     network_mode: host
     ports: 
       - 3105:3105
@@ -66,13 +66,13 @@ services:
   co2:
     build: 
       context: ./tas-co2
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     network_mode: host
     restart: always
   
   temp:
     build: 
       context: ./tas-temp 
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     network_mode: host
     restart: always
