@@ -39,7 +39,7 @@ global.usecsebase           = 'rosemary1';
 global.usecseid             = '/rosemary2';
 global.usecsebaseport       = conf.csebaseport;
 
-global.usedbhost            = 'localhost';
+global.usedbhost            = '192.168.10.40';
 global.usedbpass            = conf.dbpass;
 
 
