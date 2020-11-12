@@ -1,0 +1,14 @@
+version: "3.3"
+
+services: 
+  db:
+    image: jusk2/postgres:13
+    hostname: mobius-pgsql
+    environment:
+      POSTGRES_PASSWORD: "dksdlfduq2"
+      POSTGRES_DB: "mobiusdb"
+    volumes:
+      - ./init/:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+
