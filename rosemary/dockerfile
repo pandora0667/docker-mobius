@@ -20,7 +20,9 @@ WORKDIR $HOME/Rosemary
 
 COPY ./nCube-Rosemary $HOME/Rosemary
 RUN npm install -g --unsafe-perm
+RUN npm install -g pm2
 
 EXPOSE 7599
 
-ENTRYPOINT ["node", "rosemary"]
+#ENTRYPOINT ["node", "rosemary"]
+CMD ["pm2-docker", "rosemary"]

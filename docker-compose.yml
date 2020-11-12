@@ -3,21 +3,17 @@ version: "3.3"
 services: 
   
   db:
-    image: jusk2/postgres:13
-   environment:
-     POSTGRES_PASSWORD: "dksdlfduq2"
-     POSTGRES_DB: "mobiusdb"
-   volumes:
-     - ./init/:/docker-entrypoint-initdb.d/
-   ports:
-     - 5432:5432
+  image: jusk2/postgres:13
+  environment:
+    - POSTGRES_DB=mobiusdb
+    - POSTGRES_USER=root
+    - POSTGRES_PASSWORD=dksdlfduq2
+    - POSTGRES_INITDB_ARGS=--encoding=UTF-8
 
-  mqtt:
-    image: eclipse-mosquitto:latest
-    ports:
-      - 1883:1883
-    depends_on:
-      - db
+  volumes:
+    - ./init/:/docker-entrypoint-initdb.d/
+  ports:
+    - 5432:5432
 
   mobius:
     image: jusk2/onem2m-mobius
@@ -26,6 +22,13 @@ services:
     restart: always
     link:
       - db
+    depends_on:
+      - db
+
+  mqtt:
+    image: eclipse-mosquitto:latest
+    ports:
+      - 1883:1883
     depends_on:
       - db
 
