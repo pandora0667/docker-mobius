@@ -24,5 +24,4 @@ RUN npm install -g pm2
 
 EXPOSE 7599
 
-#ENTRYPOINT ["node", "rosemary"]
-CMD ["pm2-docker", "rosemary"]
+ENTRYPOINT ["node", "rosemary"]
