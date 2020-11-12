@@ -20,9 +20,9 @@ WORKDIR $HOME/Mobius
 
 COPY ./Mobius $HOME/Mobius
 RUN npm install -g --unsafe-perm
-RUM npm install -g pm2
+RUN npm install -g pm2
 
 EXPOSE 7579
 
 #ENTRYPOINT ["node", "mobius.js"]
-CMD [ "pm2-docker", "mobius" ]
+CMD ["pm2-docker", "mobius"]
