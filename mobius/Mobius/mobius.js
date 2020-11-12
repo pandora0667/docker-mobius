@@ -50,7 +50,7 @@ global.usetsagentport       = '7582';
 global.use_mqtt_broker      = 'localhost'; // mqttbroker for mobius
 
 global.use_secure           = 'disable';
-global.use_mqtt_port        = '1883';
+global.use_mqtt_port        = '18830';
 if(use_secure === 'enable') {
     use_mqtt_port           = '8883';
 }

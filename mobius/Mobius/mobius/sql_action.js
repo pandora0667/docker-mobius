@@ -21,10 +21,10 @@ var db = require('./db_action');
 
 var _this = this;
 
-global.max_lim = 2000;
+global.max_lim = 5000;
 
-const max_search_count = 2000;
-const max_parent_count = 2000;
+const max_search_count = 1000;
+const max_parent_count = 1000;
 
 exports.set_tuning = function(connection, callback) {
     var sql = util.format('set global max_connections = 2000');
@@ -128,7 +128,7 @@ exports.get_ri_sri = function (connection, sri, callback) {
 };
 
 function set_sri_sri(connection, ri, sri, callback) {
-    var sql = util.format('insert into sri (ri, sri) value (\'%s\', \'%s\')', ri, sri);
+    var sql = util.format('insert into sri (ri, sri) values (\'%s\', \'%s\')', ri, sri);
     db.getResult(sql, connection, function (err, results) {
         callback(err, results);
     });
@@ -138,7 +138,7 @@ exports.insert_lookup = function(connection, obj, callback) {
     //console.time('insert_lookup ' + obj.ri);
     var sql = util.format('insert into lookup (' +
         'pi, ri, ty, ct, st, rn, lt, et, acpi, lbl, at, aa, sri, spi, subl) ' +
-        'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+        'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
         obj.pi, obj.ri, obj.ty, obj.ct, obj.st, obj.rn, obj.lt, obj.et, JSON.stringify(obj.acpi), JSON.stringify(obj.lbl), JSON.stringify(obj.at), JSON.stringify(obj.aa), obj.sri, obj.spi, JSON.stringify(obj.subl));
     db.getResult(sql, connection, function (err, results) {
         if(!err) {
@@ -159,7 +159,7 @@ exports.insert_cb = function(connection, obj, callback) {
         if(!err) {
             var sql = util.format('insert into cb (' +
                 'ri, cst, csi, srt, poa, nl, ncp, srv) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.cst, obj.csi, JSON.stringify(obj.srt), JSON.stringify(obj.poa), obj.nl, obj.ncp, JSON.stringify(obj.srv));
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -185,7 +185,7 @@ exports.insert_acp = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into acp (ri, pv, pvs) ' +
-                'value (\'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\')',
                 obj.ri, JSON.stringify(obj.pv), JSON.stringify(obj.pvs));
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -211,7 +211,7 @@ exports.insert_ae = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into ae (ri, apn, api, aei, poa, ae.or, nl, rr, csz, srv) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.apn, obj.api, obj.aei, JSON.stringify(obj.poa), obj.or, obj.nl, obj.rr, obj.csz, JSON.stringify(obj.srv));
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -243,7 +243,7 @@ exports.insert_cnt = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into cnt (ri, cr, mni, mbs, mia, cni, cbs, li, cnt.or, disr) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.cr, obj.mni, obj.mbs, obj.mia, obj.cni, obj.cbs, obj.li, obj.or, obj.disr);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -348,7 +348,7 @@ exports.insert_cin = function(connection, obj, callback) {
             }
 
             var sql = util.format('insert into cin (ri, pi, cr, cnf, cs, cin.or, con) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.pi, obj.cr, obj.cnf, obj.cs, obj.or, (con_type == 'string') ? obj.con.replace(/'/g, "\\'") : JSON.stringify(obj.con));
             db.getResult(sql, connection, function (err, results) {
                 if (!err) {
@@ -368,7 +368,7 @@ exports.insert_grp = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into grp (ri, cr, mt, cnm, mnm, mid, macp, mtv, csy, gn) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.cr, obj.mt, obj.cnm, obj.mnm, JSON.stringify(obj.mid), JSON.stringify(obj.macp), obj.mtv, obj.csy, obj.gn);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -394,7 +394,7 @@ exports.insert_lcp = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into lcp (ri, los, lou, lot, lor, loi, lon, lost) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.los, obj.lou, obj.lot, obj.lor, obj.loi, obj.lon, obj.lost);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -420,7 +420,7 @@ exports.insert_fwr = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into mgo (ri, mgd, objs, obps, dc, vr, fwnnam, url, ud, uds) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.mgd, obj.objs, obj.obps, obj.dc, obj.vr, obj.fwnnam, obj.url, obj.ud, JSON.stringify(obj.uds));
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -446,7 +446,7 @@ exports.insert_bat = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into mgo (ri, mgd, objs, obps, dc, btl, bts) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.mgd, obj.objs, obj.obps, obj.dc, obj.btl, obj.bts);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -472,7 +472,7 @@ exports.insert_dvi = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into mgo (ri, mgd, objs, obps, dc, dbl, man, mgo.mod, dty, fwv, swv, hwv) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.mgd, obj.objs, obj.obps, obj.dc, obj.dbl, obj.man, obj.mod, obj.dty, obj.fwv, obj.swv, obj.hwv);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -498,7 +498,7 @@ exports.insert_dvc = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into mgo (ri, mgd, objs, obps, dc, can, att, cas, cus, ena, dis) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.mgd, obj.objs, obj.obps, obj.dc, obj.can, obj.att, JSON.stringify(obj.cas), obj.cus, obj.ena, obj.dis);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -524,7 +524,7 @@ exports.insert_rbo = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into mgo (ri, mgd, objs, obps, dc, rbo, far) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.mgd, obj.objs, obj.obps, obj.dc, obj.rbo, obj.far);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -550,7 +550,7 @@ exports.insert_nod = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into nod (ri, ni, hcl, mgca) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.ni, obj.hcl, obj.mgca);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -576,7 +576,7 @@ exports.insert_csr = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into csr (ri, cst, poa, cb, csi, mei, tri, rr, nl, srv) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.cst, JSON.stringify(obj.poa), obj.cb, obj.csi, obj.mei, obj.tri, obj.rr, obj.nl, JSON.stringify(obj.srv));
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -602,7 +602,7 @@ exports.insert_req = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into req (ri, op, tg, org, rid, mi, pc, rs, ors) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.op, obj.tg, obj.org, obj.rid, obj.mi, obj.pc, obj.rs, obj.ors);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -628,7 +628,7 @@ exports.insert_sub = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into sub (ri, pi, enc, exc, nu, gpi, nfu, bn, rl, psn, pn, nsp, ln, nct, nec, cr, su) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.pi, JSON.stringify(obj.enc), obj.exc, JSON.stringify(obj.nu), obj.gpi, obj.nfu, JSON.stringify(obj.bn), obj.rl, obj.psn, obj.pn, obj.nsp, obj.ln, obj.nct, obj.nec, obj.cr, obj.su);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -654,7 +654,7 @@ exports.insert_smd = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into smd (ri, cr, dsp, dcrp, soe, rels, smd.or) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.cr, obj.dsp, obj.dcrp, obj.soe, JSON.stringify(obj.rels), obj.or);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -680,7 +680,7 @@ exports.insert_ts = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into ts (ri, cr, mni, mbs, mia, cni, cbs, ts.or, pei, mdd, mdn, mdlt, mdc, mdt) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', ' +
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', ' +
                 '\'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.cr, obj.mni, obj.mbs, obj.mia, obj.cni, obj.cbs, obj.or, obj.pei, obj.mdd, obj.mdn, obj.mdlt, obj.mdc, obj.mdt);
             db.getResult(sql, connection, function (err, results) {
@@ -707,7 +707,7 @@ exports.insert_tsi = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into tsi (ri, pi, dgt, con, sqn, cs) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.pi, obj.dgt, obj.con, obj.sqn, obj.cs);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -733,7 +733,7 @@ exports.insert_mms = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into mms (ri, sid, soid, stid, asd, osd, sst) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.sid, obj.soid, obj.stid, obj.asd, obj.osd, obj.sst);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -759,7 +759,7 @@ exports.insert_tr = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into tr (ri, cr, tid, tctl, tst, tltm, text, tct, tltp, trqp, trsp) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.cr, obj.tid, obj.tctl, obj.tst, obj.tltm, obj.text, obj.tct, obj.tltp, JSON.stringify(obj.trqp), JSON.stringify(obj.trsp));
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -785,7 +785,7 @@ exports.insert_tm = function(connection, obj, callback) {
     _this.insert_lookup(connection, obj, function (err, results) {
         if(!err) {
             var sql = util.format('insert into tm (ri, tltm, text, tct, tept, tmd, tltp, tctl, tst, tmr, tmh, rqps, rsps, cr) ' +
-                'value (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
+                'values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
                 obj.ri, obj.tltm, obj.text, obj.tct, obj.tept, obj.tmd, obj.tltp, obj.tctl, obj.tst, obj.tmr, obj.tmh, JSON.stringify(obj.rqps), JSON.stringify(obj.rsps), obj.cr);
             db.getResult(sql, connection, function (err, results) {
                 if(!err) {
@@ -1055,36 +1055,36 @@ exports.search_lookup_parents = function(connection, query, pi, cur_lim, count, 
     });
 };
 
-function search_parents_lookup_action(connection, pi_list, count, cur_result_ri, result_ri, callback) {
+function search_parents_lookup_action(connection, pi_list, count, result_ri, callback) {
     if(count >= pi_list.length) {
         callback('200');
         return;
     }
 
-    var sql = util.format("select ri, ty from lookup where pi = \'" + pi_list[count] + "\' and ty <> \'1\' and ty <> \'9\' and ty <> \'23\' and ty <> \'4\' and ty <> \'30\' and ty <> \'17\' limit 2000");
+    var sql = util.format("select ri, ty from lookup where pi = \'" + pi_list[count] + "\' and ty <> \'1\' and ty <> \'9\' and ty <> \'23\' and ty <> \'4\' and ty <> \'30\' and ty <> \'17\' limit 1000");
     db.getResult(sql, connection, function (err, result_lookup_ri) {
         if(!err) {
             if(result_lookup_ri.length === 0) {
-                search_parents_lookup_action(connection, pi_list, ++count, cur_result_ri, result_ri, function (code) {
+                search_parents_lookup_action(connection, pi_list, ++count, result_ri, function (code) {
                     callback(code);
                 });
             }
             else {
                 for(var idx in result_lookup_ri) {
                     if(result_lookup_ri.hasOwnProperty(idx)) {
-                        cur_result_ri.push(result_lookup_ri[idx]);
-                        if(cur_result_ri.length > max_parent_count) {
+                        result_ri.push(result_lookup_ri[idx]);
+                        if(result_ri.length > max_parent_count) {
                             break;
                         }
                     }
                 }
 
                 result_lookup_ri = null;
-                if(cur_result_ri.length > max_parent_count) {
+                if(result_ri.length > max_parent_count) {
                     callback('200');
                 }
                 else {
-                    search_parents_lookup_action(connection, pi_list, ++count, cur_result_ri, result_ri, function (code) {
+                    search_parents_lookup_action(connection, pi_list, ++count, result_ri, function (code) {
                         callback(code);
                     });
                 }
@@ -1096,9 +1096,9 @@ function search_parents_lookup_action(connection, pi_list, count, cur_result_ri,
     });
 }
 
-exports.search_parents_lookup = function(connection, pi_list, cur_result_ri, result_ri, callback) {
-    cur_result_ri = [];
-    search_parents_lookup_action(connection, pi_list, 0, cur_result_ri, result_ri, function (code) {
+exports.search_parents_lookup = function(connection, pi_list, result_ri, callback) {
+    var cur_result_ri = [];
+    search_parents_lookup_action(connection, pi_list, 0, cur_result_ri, function (code) {
         if(code === '200') {
             if (cur_result_ri.length === 0) {
                 callback(code);
@@ -1116,7 +1116,7 @@ exports.search_parents_lookup = function(connection, pi_list, cur_result_ri, res
                     callback(code);
                 }
                 else {
-                    _this.search_parents_lookup(connection, pi_list, cur_result_ri, result_ri, function (code) {
+                    _this.search_parents_lookup(connection, pi_list, cur_result_ri, function (code) {
                         callback(code);
                     });
                 }

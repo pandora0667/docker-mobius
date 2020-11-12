@@ -413,7 +413,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -435,7 +434,6 @@ function create_action(request, response, callback) {
                     }
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -455,7 +453,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -489,7 +486,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -505,7 +501,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -521,7 +516,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -538,7 +532,6 @@ function create_action(request, response, callback) {
                         callback('409-5');
                     }
                     else {
-                        console.log('[create_action] create resource error ======== ' + results.code);
                         callback('500-4');
                     }
                 }
@@ -554,7 +547,6 @@ function create_action(request, response, callback) {
                         callback('409-5');
                     }
                     else {
-                        console.log('[create_action] create resource error ======== ' + results.code);
                         callback('500-4');
                     }
                 }
@@ -570,7 +562,6 @@ function create_action(request, response, callback) {
                         callback('409-5');
                     }
                     else {
-                        console.log('[create_action] create resource error ======== ' + results.code);
                         callback('500-4');
                     }
                 }
@@ -586,7 +577,6 @@ function create_action(request, response, callback) {
                         callback('409-5');
                     }
                     else {
-                        console.log('[create_action] create resource error ======== ' + results.code);
                         callback('500-4');
                     }
                 }
@@ -602,7 +592,6 @@ function create_action(request, response, callback) {
                         callback('409-5');
                     }
                     else {
-                        console.log('[create_action] create resource error ======== ' + results.code);
                         callback('500-4');
                     }
                 }
@@ -626,7 +615,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -642,7 +630,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -658,7 +645,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -682,7 +668,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -698,7 +683,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -716,7 +700,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -732,7 +715,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -748,7 +730,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -766,7 +747,6 @@ function create_action(request, response, callback) {
                         callback('409-5');
                     }
                     else {
-                        console.log('[create_action] create resource error ======== ' + results.code);
                         callback('500-4');
                     }
                 }
@@ -819,7 +799,6 @@ function create_action(request, response, callback) {
                             callback('409-5');
                         }
                         else {
-                            console.log('[create_action] create resource error ======== ' + results.code);
                             callback('500-4');
                         }
                     }
@@ -837,7 +816,6 @@ function create_action(request, response, callback) {
                     callback('409-5');
                 }
                 else {
-                    console.log('[create_action] create resource error ======== ' + results.code);
                     callback('500-4');
                 }
             }
@@ -1157,8 +1135,7 @@ function presearch_action(request, response, pi_list, found_parent_list, callbac
     var rootnm = Object.keys(resource_Obj)[0];
 
     console.time('search_parents_lookup ' + resource_Obj[rootnm].ri);
-    var cur_found_parent_list = [];
-    db_sql.search_parents_lookup(request.connection, pi_list, cur_found_parent_list, found_parent_list, function (code) {
+    db_sql.search_parents_lookup(request.connection, pi_list, found_parent_list, function (code) {
         console.timeEnd('search_parents_lookup ' + resource_Obj[rootnm].ri);
         if(code === '200') {
             request.query.cni = '0';
@@ -2220,8 +2197,7 @@ function delete_action(request, response, callback) {
     var result_ri = [];
     pi_list.push(resource_Obj[rootnm].ri);
     console.time('search_parents_lookup ' + resource_Obj[rootnm].ri);
-    var cur_result_ri = [];
-    db_sql.search_parents_lookup(request.connection, pi_list, cur_result_ri, result_ri, function (code) {
+    db_sql.search_parents_lookup(request.connection, pi_list, result_ri, function (code) {
         console.timeEnd('search_parents_lookup ' + resource_Obj[rootnm].ri);
         if(code === '200') {
             for (var i = 0; i < result_ri.length; i++) {
