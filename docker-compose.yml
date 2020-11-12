@@ -3,60 +3,42 @@ version: "3.3"
 services: 
   
   db:
-   image: mysql:5.7
+    image: jusk2/postgres:13
    environment:
-     MYSQL_ROOT_PASSWORD: "dksdlfduq2"
-     MYSQL_DATABASE: "mobiusdb"
-     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+     POSTGRES_PASSWORD: "dksdlfduq2"
+     POSTGRES_DB: "mobiusdb"
    volumes:
      - ./init/:/docker-entrypoint-initdb.d/
-   network_mode: host
-   healthcheck:
-     test: ["CMD", "mysqladmin", "--password=dksdlfduq2", "ping"]
-     interval: 20s
-     timeout: 20s 
-     retries: 5 
    ports:
-     - 3306:3306 
+     - 5432:5432
 
   mqtt:
     image: eclipse-mosquitto:latest
-    network_mode: host
     ports:
       - 1883:1883
     depends_on:
       - db
 
   mobius:
-    build: 
-      context: ./mobius
-      dockerfile: Dockerfile
-    network_mode: host
+    image: jusk2/onem2m-mobius
     ports:
       - 7579:7579
     restart: always
-    command: sh -c "dockerize -wait tcp://db:3306 -timeout 10s"
+    link:
+      - db
     depends_on:
       - db
 
   rosemary:
-    # build: 
-    #   context: ./rosemary
-    #   dockerfile: dockerfile
-    image: jusk2/rosemary
-    network_mode: host
+    image: jusk2/onem2m-rosemary
     ports:
       - 7599:7599
     restart: always
-    command: sh -c "dockerize -wait tcp://db:3306 -timeout 10s"
     depends_on:
       - db
   
   thyme:
-    build: 
-      context: ./thyme
-      dockerfile: Dockerfile
-    network_mode: host
+    image: jusk2/onem2m-thyme
     ports: 
       - 3105:3105
     restart: always
@@ -64,15 +46,9 @@ services:
       - db
 
   co2:
-    build: 
-      context: ./tas-co2
-      dockerfile: Dockerfile
-    network_mode: host
+    image: jusk2/onem2m-tas-co2
     restart: always
   
   temp:
-    build: 
-      context: ./tas-temp 
-      dockerfile: Dockerfile
-    network_mode: host
+    image: jusk2/onem2m-tas-temp
     restart: always
