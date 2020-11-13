@@ -13,6 +13,7 @@ services:
       - 5432:5432
     volumes:
       - ./init/:/docker-entrypoint-initdb.d/
+      - /mnt/swarm/pgdata/:/var/lib/postgresql/data
 
   mobius:
     image: jusk2/onem2m-mobius

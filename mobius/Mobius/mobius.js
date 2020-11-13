@@ -34,7 +34,7 @@ global.usecsebase           = 'Mobius';
 global.usecseid             = '/Mobius2';
 global.usecsebaseport       = conf.csebaseport;
 
-global.usedbhost            = '192.168.10.40';
+global.usedbhost            = 'localhost';
 global.usedbpass            = conf.dbpass;
 
 
