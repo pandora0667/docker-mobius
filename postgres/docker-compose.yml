@@ -1,8 +1,8 @@
 version: "3.3"
 
-services: 
+services:
   db:
-    image: postgres:13
+    image: jusk2/postgres:13
     hostname: mobius-pgsql
     environment:
       - POSTGRES_DB=mobiusdb
@@ -15,4 +15,3 @@ services:
       - ./pgdata/:/var/lib/postgresql/data
     ports:
       - 5432:5432
-
