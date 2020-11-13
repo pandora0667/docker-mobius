@@ -2,7 +2,7 @@ version: "3.3"
 
 services: 
   db:
-    image: jusk2/postgres:13
+    image: postgres:13
     hostname: mobius-pgsql
     environment:
       - POSTGRES_DB=mobiusdb
@@ -12,6 +12,7 @@ services:
 
     volumes:
       - ./init/:/docker-entrypoint-initdb.d/
+      - ./pgdata/:/var/lib/postgresql/data
     ports:
       - 5432:5432
 

@@ -190,10 +190,10 @@ DROP TABLE IF EXISTS hit;
 CREATE TABLE hit
 (
   ct varchar(15) NOT NULL,
-  http integer DEFAULT NULL,
-  mqtt integer DEFAULT NULL,
-  coap integer DEFAULT NULL,
-  ws integer DEFAULT NULL,
+  http varchar(100) DEFAULT NULL,
+  mqtt varchar(100) DEFAULT NULL,
+  coap varchar(100) DEFAULT NULL,
+  ws varchar(100) DEFAULT NULL,
   PRIMARY KEY (ct)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;

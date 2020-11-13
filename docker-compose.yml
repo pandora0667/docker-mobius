@@ -2,17 +2,17 @@ version: "3.2"
 
 services: 
   
-  # db:
-  #   image: jusk2/postgres:13
-  #   environment:
-  #     - POSTGRES_DB=mobiusdb
-  #     - POSTGRES_USER=root
-  #     - POSTGRES_PASSWORD=dksdlfduq2
-  #     - POSTGRES_INITDB_ARGS=--encoding=UTF-8
-  #   ports:
-  #     - 5432:5432
-  #   volumes:
-  #     - ./init/:/docker-entrypoint-initdb.d/
+  db:
+    image: jusk2/onem2m-postgres
+    environment:
+      - POSTGRES_DB=mobiusdb
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=dksdlfduq2
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    ports:
+      - 5432:5432
+    volumes:
+      - ./init/:/docker-entrypoint-initdb.d/
 
   mobius:
     image: jusk2/onem2m-mobius
@@ -20,16 +20,16 @@ services:
       - 7579:7579
     network_mode: host
     restart: always
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
 
   mqtt:
     image: eclipse-mosquitto:latest
     ports:
       - 1883:1883
     network_mode: host
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
 
   rosemary:
     image: jusk2/onem2m-rosemary
@@ -37,8 +37,8 @@ services:
       - 7599:7599
     network_mode: host
     restart: always
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
   
   thyme:
     image: jusk2/onem2m-thyme
@@ -46,8 +46,8 @@ services:
       - 3105:3105
     network_mode: host
     restart: always
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
 
   co2:
     image: jusk2/onem2m-tas-co2
